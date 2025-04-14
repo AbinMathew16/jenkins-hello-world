@@ -4,8 +4,7 @@ pipeline {
     stages {
         stage('Clone Repo') {
             steps {
-                echo 'Cloning the repository...'
-                git 'https://github.com/AbinMathew16/jenkins-hello-world.git'
+                echo 'Cloning the repository... Already done by Jenkins'
             }
         }
 
