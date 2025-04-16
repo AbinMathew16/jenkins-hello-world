@@ -1,0 +1,57 @@
+pipeline {
+  agent any
+
+  environment {
+    APP_DIR = "todo-list"
+    WEB_DIR = "/var/www/html"
+  }
+
+  stages {
+
+    stage('Install nginx') {
+      steps {
+        sh '''
+          if ! command -v nginx > /dev/null; then
+            echo "Installing nginx..."
+            sudo apt-get update && sudo apt-get install -y nginx
+          else
+            echo "nginx already installed. Skipping installation."
+          fi
+        '''
+      }
+    }
+
+    stage('Clone Repository') {
+      steps {
+        sh '''
+          if [ -d "${APP_DIR}" ]; then
+            echo "Repository already cloned."
+          else
+            git clone https://github.com/Lordwill1/todo-list.git
+          fi
+        '''
+      }
+    }
+
+    stage('Copy Files to Nginx') {
+      steps {
+        sh '''
+          echo "Clearing old files..."
+          sudo rm -rf ${WEB_DIR}/*
+          
+          echo "Copying new files..."
+          sudo cp -r ${APP_DIR}/* ${WEB_DIR}/
+        '''
+      }
+    }
+
+    stage('Restart Nginx') {
+      steps {
+        sh '''
+          echo "Restarting nginx to apply changes..."
+          sudo systemctl restart nginx
+        '''
+      }
+    }
+  }
+}
