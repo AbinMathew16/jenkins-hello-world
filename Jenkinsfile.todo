@@ -13,7 +13,7 @@ pipeline {
         sh '''
           if ! command -v nginx > /dev/null; then
             echo "Installing nginx..."
-            apt-get update && apt-get install -y nginx
+            sudo apt-get update && sudo apt-get install -y nginx
           else
             echo "nginx already installed. Skipping installation."
           fi
@@ -37,10 +37,10 @@ pipeline {
       steps {
         sh '''
           echo "Clearing old files..."
-          rm -rf ${WEB_DIR}/*
+          sudo rm -rf ${WEB_DIR}/*
           
           echo "Copying new files..."
-          cp -r ${APP_DIR}/* ${WEB_DIR}/
+          sudo cp -r ${APP_DIR}/* ${WEB_DIR}/
         '''
       }
     }
@@ -49,7 +49,7 @@ pipeline {
       steps {
         sh '''
           echo "Restarting nginx to apply changes..."
-          systemctl restart nginx
+          sudo systemctl restart nginx
         '''
       }
     }
